@@ -1,0 +1,27 @@
+{
+  "name": "distance-plotter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "plotter.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "johnny-five": "^0.11.3",
+    "mysql": "^2.13.0",
+    "plotly": "^1.0.6",
+    "serialport": "^5.0.0-beta7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nandhithakamal/Distance-Plotter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nandhithakamal/Distance-Plotter/issues"
+  },
+  "homepage": "https://github.com/nandhithakamal/Distance-Plotter#readme"
+}
