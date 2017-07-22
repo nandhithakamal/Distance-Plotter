@@ -23,12 +23,30 @@ app.post('/fetch', function(req, res){
         var numberOfRows = result.length;
         var row = 0;
         //console.log(numberOfRows);
+        var temp = 1013;
+        var yearArr = result[row]["time"];
+        console.log(yearArr.toString());
+        //var time = yearArr.toString().split(" ");
+        //var date = time[0];
         while(row < numberOfRows){
-            dataFromTable[row] = {
-                "year": result[row]["time"],
+            var dateTime = result[row]["time"];
+            console.log(dateTime);
+            //var arr = dateTime.toString().split(" "));
+            //var dateTime = new Date(currResult);
+            var millisecond = dateTime.getMilliseconds();
+            var second = dateTime.getSeconds();
+            var minute = dateTime.getMinutes();
+            var hour = dateTime.getHours();
+            var year = dateTime.getYear();
+            var month = dateTime.getMonth();
+            var date = dateTime.getDate();
+            
+            var time = hour + ":" + minute + ":" + second + "." + millisecond;
+            console.log(time);
+            dataFromTable[row] ={
+                "time": time,
                 "value": result[row]["alcoholvalue"]
             };
-            console.log(dataFromTable[row]);
             row++;
         }
     });
