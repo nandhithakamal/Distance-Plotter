@@ -1,9 +1,13 @@
 var Serialport = require('serialport');
 var mysql = require('mysql');
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var app = express();
 var root = process.cwd();
+var dataFromTable = [];
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/js",express.static("js"));
 
 app.get('/', function(req, res){
     res.sendFile("home.html", {root});
@@ -11,12 +15,31 @@ app.get('/', function(req, res){
 app.get('/graph', function(req, res){
     res.sendFile("graph.html", {root});
 });
+app.post('/fetch', function(req, res){
+    //var d = fetchFromDb();
+    var sqlQuery = "select * from mq3data limit 10";
+    con.query(sqlQuery, function (err, result, fields) {
+        if (err) throw err;
+        var numberOfRows = result.length;
+        var row = 0;
+        //console.log(numberOfRows);
+        while(row < numberOfRows){
+            dataFromTable[row] = {
+                "year": result[row]["time"],
+                "value": result[row]["alcoholvalue"]
+            };
+            console.log(dataFromTable[row]);
+            row++;
+        }
+    });
+    res.send(dataFromTable);
+});
 app.listen(8090, function () {
   console.log('Distance Plotter on 8090');
 });
 
 
-var portName = 'COM3';
+/*var portName = 'COM3';
 var distance = 0;
 var time = 0;
 var connected = false;
@@ -27,7 +50,7 @@ var sp = new Serialport(portName, {
     parity: 'none',
     stopBits: 1,
     flowControl: false
-});
+});*/
 
 var con = mysql.createConnection({
     host: 'localhost',
@@ -35,7 +58,7 @@ var con = mysql.createConnection({
     password: "",
     database: "ultrasonicReads"
 });
-
+/*
 function getCurrentTime(){
     var now = new Date();
     var date = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
@@ -46,12 +69,12 @@ function getCurrentTime(){
 }
 
 function insertIntoDb(){
-    var sql = "INSERT INTO inputdata (time, distance) VALUES ( now(2), " + distance + ");";
+    var sql = "INSERT INTO mq3data VALUES ( now(2), " + distance + ");";
     con.query(sql, function (err, result) {
         if (err) throw err;
         //console.log("1 record inserted");
     });
-}
+}*/
 
 con.connect(function(err){
     if (err) throw err;
@@ -61,6 +84,29 @@ con.connect(function(err){
     }
 });
 
+
+function fetchFromDb(){
+    var sqlQuery = "select * from mq3data limit 10";
+    con.query(sqlQuery, function (err, result, fields) {
+        if (err) throw err;
+        var numberOfRows = result.length;
+        var row = 0;
+        //console.log(numberOfRows);
+        while(row < numberOfRows){
+            dataFromTable[row] = {
+                "time": result[row]["time"],
+                "alcoholValue": result[row]["alcoholvalue"]
+            };
+            console.log( dataFromTable[row]);
+            row++;
+        }
+        //console.log(dataFromTable);
+        return dataFromTable;
+    });
+}
+
+//fetchFromDb();
+/*
 sp.on('data', function(data) {
     //time = getCurrentTime();
     distance = parseInt(data.toString('utf8'));
@@ -69,4 +115,4 @@ sp.on('data', function(data) {
         if(!isNaN(distance))
             insertIntoDb();
     }
-});
+});*/
